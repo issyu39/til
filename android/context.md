@@ -21,3 +21,6 @@ http://revetronique.blog.fc2.com/blog-entry-232.html?sp
   - Applicationが取得できる
 - View や Fragment の getContext()
   - Activityが取得できる
+
+## Zennのリンク(投稿済み)
+https://zenn.dev/issyu_39/articles/5225144dae22efc162fd
