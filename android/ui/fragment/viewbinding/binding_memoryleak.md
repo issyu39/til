@@ -23,5 +23,7 @@ https://gist.github.com/satoshun/0185c4231983016f6afa4d8f8c423cd9
 *DeNA Advent Calendar 2020 社内Android勉強会でCustom Android Lintを実装する中で得た知見*  
 https://engineer.dena.com/posts/2020.12/getting-started-with-android-lint/
 
+onDestroyViewのメソッドの中で`_binding = null`がなかったらエラーとするLint
+
 ## 参考リンク
 https://satoshun.github.io/2020/01/fragment-view-memory-leak/
