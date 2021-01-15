@@ -3,9 +3,9 @@
 
   ### 1. onDestoryViewで解放する		
 
-  ```		
+ ```kotlin		
  override fun onDestroyView() {		
-   _binding = null		
+     _binding = null		
  }		
  ```		
 
