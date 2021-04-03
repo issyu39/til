@@ -21,7 +21,7 @@ dependencies {
 
 ## BoM一覧
 - Kotlin Libraries Bill of Materials  
-https://android.benigumo.com/20201204/bom/ 
+https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-bom
 
 - Kotlinx Coroutines BOM  
 https://mvnrepository.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-bom
