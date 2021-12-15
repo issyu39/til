@@ -15,7 +15,7 @@
 https://developer.android.com/jetpack/guide?s=09
 
 ## Androidアプリの推奨アーキテクチャ
-共通のアーキテクチャの原則を考慮すると、各アプリケーションは少なくとも2つのレイヤーを持つ必要がある。
+共通のアーキテクチャの原則を考慮すると、各アプリケーションは少なくとも2つのレイヤーを持つ必要がある。   
 矢印はクラス間の依存を表しており、例えばドメイン層はデータ層に依存する。
 
 - アプリケーションのデータをスクリーンに表示するUI層
@@ -24,7 +24,7 @@ https://developer.android.com/jetpack/guide?s=09
 <img width="600" alt="スクリーンショット 2020-11-24 16 38 44" src="https://user-images.githubusercontent.com/16067422/146178460-c53bf534-7c27-4256-9ccf-c2a49e75bbfb.png">
 
 ### UI層
-UI層の役割としてはアプリケーションのデータをスクリーンに表示することであり、データが変更するたびに表示に変更を反映する必要がある。
+UI層の役割としてはアプリケーションのデータをスクリーンに表示することであり、データが変更するたびに表示に変更を反映する必要がある。  
 UI層は以下の2つから成り立っている。
 - データをスクリーンに描画する`UI elements` ViewやJetpack Composeを使用する
 - View Modelのような`State holders` データを保持したり、UI層にそれを公開したりロジックを処理する
@@ -34,12 +34,12 @@ UI層は以下の2つから成り立っている。
 https://developer.android.com/jetpack/guide/ui-layer
 
 ### データ層
-データ層はビジネスロジックを含む層である。　
-データ層はそれぞれ複数のデータソースを含むリポジトリ群から成り、Repositoryはデータの種類に応じてそれぞれ作る必要がある。  
+データ層はビジネスロジックを含む層である。  
+データ層はそれぞれ複数のデータソースを含むリポジトリ群から成り、Repositoryはデータの種類に応じてそれぞれ作る必要がある。    
   
 <img width="600" alt="スクリーンショット 2020-11-24 16 38 44" src="https://user-images.githubusercontent.com/16067422/146195396-8f347210-62a9-49b3-8e22-9c037d773b00.png">
 
-Repositoryの役割として以下がある。
+Repositoryの役割として以下がある。  
 - アプリ内に他の部分にデータを公開する
 - データに対する変更の一元化
 - 複数のデータソース間のコンフリクトを回避する
@@ -48,8 +48,20 @@ Repositoryの役割として以下がある。
 
 各データソースクラスは、ファイル、ネットワーク・ソース、ローカル・データベースなど、1つのデータソースのみを扱う責任を持つ必要がある。
 
-### ドメイン層
+詳細は以下   
+https://developer.android.com/jetpack/guide/data-layer
 
+### ドメイン層
+ドメイン層はUI層とデータ層の間に位置する、任意のレイヤーである。  
+ドメイン層は複雑なビジネスロジックや複数のViewModelで再利用される単純なビジネスロジックをカプセル化する役割がある。  
+全てのアプリにこれらの要件があるわけではないので、この層はオプションである。    
+
+<img width="600" alt="スクリーンショット 2020-11-24 16 38 44" src="https://user-images.githubusercontent.com/16067422/146197610-a20cbcc8-f73d-4670-8d33-5ad0604d6ab8.png">
+
+この層のクラスは一般的に`use cases`または`interactors`と呼ばれている。
+
+詳細は以下   
+https://developer.android.com/jetpack/guide/domain-layer
 
 ## Androidアプリの一般的なアーキテクチャ
 <img width="600" alt="スクリーンショット 2020-11-24 16 38 44" src="https://user-images.githubusercontent.com/16067422/100062987-cf5c9500-2e73-11eb-8550-d498de322e3e.png">
