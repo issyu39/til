@@ -11,12 +11,10 @@ Stateクラスのインスタンスを作成して返す、`createState`とい�
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
     Key? key,
-    this.title,
-    this.message
+    this.title
   }) : super(key: key);
   
   final String title;
-  final String message; 
   
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -30,19 +28,50 @@ Stateが更新される度に、`build`で新たな表示内容が生成され�
 
 **build method**  
 https://api.flutter.dev/flutter/widgets/State/build.html
+
+#### initStateメソッド  
+Stateクラスで利用するプロパティの初期化処理を`initState`で行う。  
+`initState`はインスタンスが作成され、Widgetのツリー構造への組み込みが完了した時点で呼び出される。    
+このため、コンストラクタではウィジェットツリーが完了していないためにエラーになるような処理(他のWidgetの参照など)も、`initState`では問題なく実行できる。
+
+#### State更新とsetState
+`setState`はStateの更新をStateクラスに知らせる働きをする。  
+以下のコード例では、`_message`を変更することで、更新時に`build`が再実行されTextの値が変更される。
+
+
 ```Dart
 class _MyHomePageState extends State<MyHomePage> {
+  String _message;
+  
+  @override
+  void initState() {
+    super.initState();
+    _message = 'Hello!';
+  }
+  
+  @override
+  void _setMessage() {
+    setState(() {
+      _message = 'Tapped!';
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         // MyAppで定義されたtitleは、widget.titleで取得できる
-        title: Text(widget.title)
+        title: Text(widget.title),
       ),
       body: Text(
         widget.message,
-        style: TextStyle(fontSize: 32.0)
-      ) 
+        style: TextStyle(fontSize: 32.0),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _setMessage,
+        toolTip: 'set message.',
+        child: Icon(Icons.star)
+      ),
     );
   }
 }
@@ -52,7 +81,6 @@ class _MyHomePageState extends State<MyHomePage> {
 ```Dart
 class MyApp extends StatelessWidget {
   final title = 'Flutter Sample';
-  final message = 'Sample Message';
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +88,6 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       home: const MyHomePage(
         title: this.title,
-        message: this.message
       ) 
     );
   }
