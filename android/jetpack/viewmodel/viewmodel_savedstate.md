@@ -27,7 +27,8 @@ class SavedStateViewModel(private val savedStateHandle: SavedStateHandle) : View
     }
     
     // ユーザーの入力値を保持する場合
-    val userTextInput: MutableLiveData<String> = handle.getLiveData<String>("USER_TEXT_INPUT", "")
+    val _userTextInput: MutableLiveData<String> = savedStateHandle.getLiveData<String>("USER_TEXT_INPUT", "")
+    val userTextInput: LiveData<String> get() = _userTextInput
 
     fun setQuery(query: String) {
         savedStateHandle["query"] = query
