@@ -17,6 +17,8 @@ class SearchFragment: Fragment{
 ```
 
 ## SavedStateHandleの値の取得例
+- SavedStateHandleで定義したプロパティは、ActivityやFragmentが破棄される時、システムがプロセスをキルする時は自動で保存され、復帰する時は自動で復元される
+- SavedStateHandleには、ユーザーの入力値やスクロール位置などUIの一時状態を保存しておくと良さそう
 
 ### LiveData
 ```Kotlin
