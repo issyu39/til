@@ -126,3 +126,52 @@ val NewsUiState.canBookmarkNews: Boolean get() = isSignedIn && isPremium
 UIのレンダリングに必要な状態は、互いに完全に独立している場合がある。このような場合は、完全に異なる複数の状態を一緒にまとめると、コストがメリットを上回る可能性がある。ある状態が他の状態より頻繁に更新される場合は、特にそうである。
 - **UiStateの差分抽出**  
 UiStateオブジェクト内のフィールドの数が多いと、その分だけフィールドが更新された結果としてストリームが出力される可能性が高くなる。Viewには、連続する出力が異なるものか同じものかを把握する差分抽出メカニズムがないため、出力ごとにビューの更新が発生する。つまり、LiveDataで`Flow API`や`distinctUntilChanged()`などのメソッドを使用した緩和策が必要になる場合がある。
+
+### UI状態を使用する
+UIでUiStateオブジェクトのストリームを使用するには、アプリで使用している監視可能なデータ型に終端演算子を使用する。たとえば、LiveDataの場合は`observe()`メソッドを使用し、Kotlin Flowの場合は`collect()`メソッドまたはそのバリエーションを使用する。   
+UIで監視可能なデータホルダーを使用する際は、必ずUIのライフサイクルを考慮する必要がある。これが重要なのは、Viewがユーザーに表示されていないとき、UIはUI状態を監視すべきでないからである。LiveDataを使用している場合は、`LifecycleOwner`が暗黙的にライフサイクルに関する問題に対処する。Flowを使用している場合は、適切なコルーチンスコープと`repeatOnLifecycle API`を使用してこの問題を処理することをおすすめする。
+```Kotlin
+class NewsActivity : AppCompatActivity() {
+
+    private val viewModel: NewsViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ...
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect {
+                    // Update UI elements
+                }
+            }
+        }
+    }
+}
+```
+Composeの場合は以下のようになる
+```Kotlin
+@Composable
+fun LatestNewsScreen(
+    modifier: Modifier = Modifier,
+    viewModel: NewsViewModel = viewModel()
+) {
+    Box(modifier.fillMaxSize()) {
+
+        if (viewModel.uiState.isFetchingArticles) {
+            CircularProgressIndicator(Modifier.align(Alignment.Center))
+        }
+
+        // Add other UI elements. For example, the list.
+    }
+}
+```
+#### 画面にエラーを表示する
+たとえば、記事のフェッチ中にエラーが発生した場合、通常は、ユーザーに問題の詳細を示す1つ以上のメッセージを表示する。
+```Kotlin
+data class Message(val id: Long, val message: String)
+
+data class NewsUiState(
+    val userMessages: List<Message> = listOf(),
+    ...
+)
+```
