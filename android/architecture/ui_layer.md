@@ -74,3 +74,38 @@ UIロジックは、特に`Context`のようなUIタイプを含む場合、View
 - `データの整合性` UIに対して、信頼できる唯一のデータソースが存在する
 - `テストのしやすさ` 状態のソースが分離されるため、UIから独立してテストを行うことができる
 - `メンテナンスのしやすさ` 状態の変化は、ユーザーイベントおよびデータソースからのデータ取得の結果であるという、明確に定義されたパターンに従う
+
+## UI状態を公開する
+UI状態を定義し、その状態の生成を管理する方法を決定したら、次のステップとして、生成された状態をUIに公開する。UDFを使用して状態の生成を管理するので、生成される状態をストリームとみなすことができる。つまり、時間の経過とともに状態の複数のバージョンが生成される。したがって、LiveDataやStateFlowなどの監視可能なデータホルダーでUI状態を公開する必要がある。これは、UIが、ViewModelから直接手動でデータを取得する手間をかけずに、状態の変更に反応できるようにするためである。このようなタイプには、常にUI状態の最新バージョンがキャッシュに保存されるというメリットもあり、構成変更後に状態をすばやく復元するためにも役立つ。  
+
+UiStateのストリームを作成する一般的な方法は、可変のバッキングストリームをViewModelからの不変のストリームとして公開することである。たとえば、`MutableStateFlow<UiState>`を`StateFlow<UiState>`として公開する。
+```Kotlin
+class NewsViewModel(
+    private val repository: NewsRepository,
+    ...
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(NewsUiState())
+    val uiState: StateFlow<NewsUiState> = _uiState.asStateFlow()
+
+    private var fetchJob: Job? = null
+
+    fun fetchArticles(category: String) {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            try {
+                val newsItems = repository.newsItemsForCategory(category)
+                _uiState.update {
+                    it.copy(newsItems = newsItems)
+                }
+            } catch (ioe: IOException) {
+                // Handle the error and notify the UI when appropriate.
+                _uiState.update {
+                    val messages = getMessagesFromThrowable(ioe)
+                    it.copy(userMessages = messages)
+                 }
+            }
+        }
+    }
+}
+```
